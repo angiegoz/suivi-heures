@@ -1,0 +1,288 @@
+
+/* =========================
+   BASE
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --background: #f3f5f9;
+    --surface: #ffffff;
+    --primary: #4969d8;
+    --primary-light: #e9edff;
+    --text: #20283a;
+    --muted: #81899a;
+    --border: #e9ecf2;
+    --success: #239b70;
+    --danger: #d65a5a;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--background);
+    color: var(--text);
+    padding-bottom: 90px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: #172033;
+    color: white;
+    padding: 28px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eyebrow {
+    color: #aab7da;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 7px;
+}
+
+.header h1 {
+    font-size: 22px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    background: #4969d8;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: bold;
+}
+
+/* =========================
+   PAGES
+========================= */
+
+main {
+    max-width: 650px;
+    margin: auto;
+    padding: 24px 18px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+h2 {
+    font-size: 25px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 23px;
+}
+
+/* =========================
+   CARTE PRINCIPALE
+========================= */
+
+.main-card {
+    background: linear-gradient(135deg, #304ba8, #5978e5);
+    color: white;
+    padding: 24px;
+    border-radius: 20px;
+    margin-bottom: 17px;
+    box-shadow: 0 8px 22px #304ba822;
+}
+
+.main-card > p:first-child {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.big-number {
+    font-size: 43px;
+    font-weight: 750;
+    margin: 12px 0;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.main-card .muted {
+    color: #dce3ff;
+}
+
+.progress-track {
+    height: 9px;
+    background: #ffffff44;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 17px 0 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: white;
+    border-radius: 20px;
+}
+
+#weekly-balance {
+    font-size: 13px;
+}
+
+/* =========================
+   STATISTIQUES
+========================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stat-card,
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.stat-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.stat-card strong {
+    font-size: 21px;
+}
+
+.panel h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+}
+
+.panel label {
+    display: block;
+    font-size: 13px;
+    margin: 17px 0 8px;
+}
+
+.panel input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+/* =========================
+   HISTORIQUE
+========================= */
+
+.day-card {
+    background: white;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 11px;
+    border: 1px solid var(--border);
+}
+
+.day-card h3 {
+    margin-bottom: 8px;
+}
+
+.day-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* =========================
+   BOUTONS
+========================= */
+
+.primary-button {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+}
+
+.nav-button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.nav-button span {
+    font-size: 10px;
+}
+
+.nav-button.active {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* =========================
+   PETITS ÉCRANS
+========================= */
+
+@media (max-width: 380px) {
+    .header h1 {
+        font-size: 19px;
+    }
+
+    .big-number {
+        font-size: 36px;
+    }
+
+    .stat-card strong {
+        font-size: 18px;
+    }
+}

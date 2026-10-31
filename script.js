@@ -373,6 +373,292 @@ function addDay() {
 }
 
 // ==========================================
+// IMPORTATION DES HORAIRES DEPUIS UNE NOTE
+// ==========================================
+
+let pendingImport = [];
+
+function parseNoteDate(value) {
+    const match = value.match(
+        /^(\d{1,2})\s+([a-zéûô]+)\.?\s+(\d{4})$/i
+    );
+
+    if (!match) return null;
+
+    const day = Number(match[1]);
+    const monthName = match[2]
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+    const months = {
+        janvier: 0, janv: 0, jan: 0,
+        fevrier: 1, fevr: 1, fev: 1,
+        mars: 2,
+        avril: 3, avr: 3,
+        mai: 4,
+        juin: 5,
+        juillet: 6, juil: 6,
+        aout: 7,
+        septembre: 8, sept: 8, sep: 8,
+        octobre: 9, oct: 9,
+        novembre: 10, nov: 10,
+        decembre: 11, dec: 11
+    };
+
+    const month = months[monthName];
+    if (month === undefined) return null;
+
+    const year = Number(match[3]);
+    const date = new Date(year, month, day, 12);
+
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month ||
+        date.getDate() !== day
+    ) return null;
+
+    return dateToString(date);
+}
+
+function parseNoteTime(value) {
+    if (!/^\d{1,2}:\d{2}$/.test(value)) return null;
+
+    const [hours, minutes] = value.split(":").map(Number);
+
+    if (hours > 23 || minutes > 59) return null;
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function parseNoteBreak(value) {
+    const text = value.toLowerCase().replace(/\s/g, "");
+
+    let match = text.match(/^(\d+)h(?:(\d{1,2})min?)?$/);
+
+    if (match) {
+        return Number(match[1]) * 60 + Number(match[2] || 0);
+    }
+
+    match = text.match(/^(\d+)min?$/);
+
+    if (match) return Number(match[1]);
+
+    return null;
+}
+
+function parseWorkNote(text) {
+    const lines = text.split(/\r?\n/);
+    const result = [];
+    const errors = [];
+
+    let current = null;
+
+    function finishDay() {
+        if (!current) return;
+
+        if (!current.date || !current.arrival || !current.departure) {
+            errors.push("Une journée est incomplète.");
+        } else {
+            result.push(current);
+        }
+    }
+
+    lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+
+        let match = trimmed.match(/^Date\s*:\s*(.+)$/i);
+
+        if (match) {
+            finishDay();
+
+            const date = parseNoteDate(match[1].trim());
+
+            if (!date) {
+                errors.push("Date non reconnue : " + match[1]);
+                current = null;
+                return;
+            }
+
+            current = {
+                date,
+                arrival: null,
+                departure: null,
+                breakMinutes: settings.defaultBreak
+            };
+
+            return;
+        }
+
+        if (!current) return;
+
+        match = trimmed.match(/^Arrivée\s*:\s*(.+)$/i);
+        if (match) {
+            current.arrival = parseNoteTime(match[1].trim());
+            if (!current.arrival) {
+                errors.push("Heure d'arrivée invalide : " + match[1]);
+            }
+            return;
+        }
+
+        match = trimmed.match(/^Départ\s*:\s*(.+)$/i);
+        if (match) {
+            current.departure = parseNoteTime(match[1].trim());
+            if (!current.departure) {
+                errors.push("Heure de départ invalide : " + match[1]);
+            }
+            return;
+        }
+
+        match = trimmed.match(/^Pause\s*:\s*(.+)$/i);
+        if (match) {
+            const pause = parseNoteBreak(match[1].trim());
+
+            if (pause === null) {
+                errors.push("Pause non reconnue : " + match[1]);
+            } else {
+                current.breakMinutes = pause;
+            }
+        }
+    });
+
+    finishDay();
+
+    return { days: result, errors };
+}
+
+function setupImportUI() {
+    const historyList = document.getElementById("history-list");
+
+    if (!historyList || document.getElementById("import-panel")) return;
+
+    const panel = document.createElement("div");
+    panel.id = "import-panel";
+    panel.style.cssText = `
+        background: var(--card-bg, white);
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+    `;
+
+    const title = document.createElement("h2");
+    title.textContent = "Importer mes horaires";
+
+    const description = document.createElement("p");
+    description.textContent =
+        "Colle ici le texte de ta note avec les dates, arrivées et départs.";
+
+    const textarea = document.createElement("textarea");
+    textarea.id = "import-text";
+    textarea.placeholder =
+        "Date: 14 oct. 2026\nArrivée: 09:05\nDépart: 18:56";
+    textarea.rows = 9;
+    textarea.style.cssText = `
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font: inherit;
+        resize: vertical;
+    `;
+
+    const previewButton = document.createElement("button");
+    previewButton.className = "primary-button";
+    previewButton.textContent = "Analyser ma note";
+    previewButton.style.marginTop = "12px";
+
+    const status = document.createElement("div");
+    status.id = "import-status";
+    status.style.marginTop = "12px";
+
+    const importButton = document.createElement("button");
+    importButton.className = "primary-button";
+    importButton.textContent = "Importer les journées";
+    importButton.style.marginTop = "12px";
+    importButton.style.display = "none";
+
+    previewButton.addEventListener("click", () => {
+        const parsed = parseWorkNote(textarea.value);
+
+        pendingImport = parsed.days;
+
+        const duplicates = pendingImport.filter(day =>
+            days.some(existing => existing.date === day.date)
+        ).length;
+
+        const newDays = pendingImport.length - duplicates;
+
+        status.innerHTML = "";
+
+        const summary = document.createElement("p");
+        summary.textContent =
+            `${pendingImport.length} journée(s) reconnue(s), ` +
+            `${newDays} nouvelle(s), ${duplicates} doublon(s).`;
+
+        status.appendChild(summary);
+
+        pendingImport.forEach(day => {
+            const item = document.createElement("p");
+            item.textContent =
+                `${formatDate(day.date)} : ${day.arrival} – ${day.departure} ` +
+                `| Pause : ${formatDuration(day.breakMinutes)}`;
+            status.appendChild(item);
+        });
+
+        if (parsed.errors.length) {
+            parsed.errors.forEach(error => {
+                const item = document.createElement("p");
+                item.textContent = "⚠️ " + error;
+                item.style.color = "red";
+                status.appendChild(item);
+            });
+        }
+
+        importButton.style.display =
+            newDays > 0 && parsed.errors.length === 0
+                ? "block"
+                : "none";
+    });
+
+    importButton.addEventListener("click", () => {
+        const newDays = pendingImport.filter(day =>
+            !days.some(existing => existing.date === day.date)
+        );
+
+        if (newDays.length === 0) return;
+
+        days.push(...newDays);
+
+        days.sort((a, b) => a.date.localeCompare(b.date));
+
+        saveData();
+        pendingImport = [];
+
+        textarea.value = "";
+        status.textContent =
+            `${newDays.length} journée(s) importée(s) avec succès !`;
+
+        importButton.style.display = "none";
+
+        refreshApp();
+    });
+
+    panel.append(
+        title,
+        description,
+        textarea,
+        previewButton,
+        status,
+        importButton
+    );
+
+    historyList.parentElement.insertBefore(panel, historyList);
+}
+
+// ==========================================
 // 9. STATISTIQUES
 // ==========================================
 
@@ -478,6 +764,7 @@ function refreshApp() {
 document.getElementById("add-day-button").addEventListener("click", addDay);
 document.getElementById("save-settings").addEventListener("click", saveSettings);
 
+setupImportUI();
 refreshApp();
 
 // Activation du mode hors connexion

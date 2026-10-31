@@ -1,0 +1,536 @@
+
+/* =========================
+   BASE
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --background: #f3f5f9;
+    --surface: #ffffff;
+    --primary: #4969d8;
+    --primary-light: #e9edff;
+    --text: #20283a;
+    --muted: #81899a;
+    --border: #e9ecf2;
+    --success: #239b70;
+    --danger: #d65a5a;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--background);
+    color: var(--text);
+    padding-bottom: 90px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: #172033;
+    color: white;
+    padding: 28px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eyebrow {
+    color: #aab7da;
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 7px;
+}
+
+.header h1 {
+    font-size: 22px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    background: #4969d8;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: bold;
+}
+
+/* =========================
+   PAGES
+========================= */
+
+main {
+    max-width: 650px;
+    margin: auto;
+    padding: 24px 18px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+h2 {
+    font-size: 25px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 23px;
+}
+
+/* =========================
+   CARTE PRINCIPALE
+========================= */
+
+.main-card {
+    background: linear-gradient(135deg, #304ba8, #5978e5);
+    color: white;
+    padding: 24px;
+    border-radius: 20px;
+    margin-bottom: 17px;
+    box-shadow: 0 8px 22px #304ba822;
+}
+
+.main-card > p:first-child {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.big-number {
+    font-size: 43px;
+    font-weight: 750;
+    margin: 12px 0;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.main-card .muted {
+    color: #dce3ff;
+}
+
+.progress-track {
+    height: 9px;
+    background: #ffffff44;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 17px 0 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: white;
+    border-radius: 20px;
+}
+
+#weekly-balance {
+    font-size: 13px;
+}
+
+/* =========================
+   STATISTIQUES
+========================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stat-card,
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.stat-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.stat-card strong {
+    font-size: 21px;
+}
+
+.panel h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+}
+
+.panel label {
+    display: block;
+    font-size: 13px;
+    margin: 17px 0 8px;
+}
+
+.panel input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+/* =========================
+   HISTORIQUE
+========================= */
+
+.day-card {
+    background: white;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 11px;
+    border: 1px solid var(--border);
+}
+
+.day-card h3 {
+    margin-bottom: 8px;
+}
+
+.day-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* =========================
+   BOUTONS
+========================= */
+
+.primary-button {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+
+.day-card button.primary-button.delete-button {
+    background-color: #dc3545 !important;
+    color: white;
+}
+
+.day-card button.primary-button.delete-button:hover {
+    background-color: #bb2d3b !important;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+}
+
+.nav-button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.nav-button span {
+    font-size: 10px;
+}
+
+.nav-button.active {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* =========================
+   PETITS ÉCRANS
+========================= */
+
+@media (max-width: 380px) {
+    .header h1 {
+        font-size: 19px;
+    }
+
+    .big-number {
+        font-size: 36px;
+    }
+
+    .stat-card strong {
+        font-size: 18px;
+    }
+}
+/* GRAPHIQUE MENSUEL */
+
+.chart-container {
+    margin-top: 25px;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 16px;
+}
+
+.chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.chart-header button {
+    border: none;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.chart-options {
+    margin-bottom: 18px;
+}
+
+.chart-options label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.chart-options select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.chart-legend span::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: -1px;
+}
+
+.chart-legend span:first-child::before {
+    background: #3498DB;
+}
+
+.chart-legend span:last-child::before {
+    background: #2ECC71;
+    opacity: 0.4;
+}
+
+.monthly-chart {
+    min-height: 180px;
+}
+
+
+/* BARRES DU GRAPHIQUE MENSUEL */
+
+.monthly-chart {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+    padding-top: 10px;
+}
+
+.chart-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+.chart-bar-track {
+    position: relative;
+    width: 100%;
+    max-width: 32px;
+    height: 150px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: transparent;
+    border-radius: 6px 6px 0 0;
+    overflow: visible;
+}
+
+.chart-target-bar,
+.chart-actual-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    z-index: 1;
+}
+
+.chart-target-bar {
+    background: #3498DB;
+}
+
+.chart-actual-bar {
+    background: #2ECC71;
+    opacity: 0.4;
+    z-index: 1;
+}
+
+.chart-day-label {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text);
+}
+
+
+/* NOUVELLE DISPOSITION HORIZONTALE DU GRAPHIQUE */
+
+.monthly-chart {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    gap: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 5px 5px;
+}
+
+
+.chart-axis {
+    position: sticky;
+    left: 0;
+    align-self: flex-start;
+    flex: 0 0 28px;
+    height: 150px;
+    font-size: 11px;
+    color: var(--text);
+    z-index: 4;
+    background: transparent;
+    margin-top: -5px;
+}
+
+.chart-axis::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    bottom: -5px;
+    left: -5px;
+    right: 0;
+    background: var(--background);
+    z-index: -1;
+}
+
+.chart-day {
+    flex: 0 0 27px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-bar-track {
+    position: relative;
+    width: 22px;
+    height: 150px;
+    background: #f0f2f5;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
+
+.chart-day-label {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text);
+}
+
+/* GRILLE HORIZONTALE */
+
+.monthly-chart {
+    position: relative;
+}
+
+.chart-grid {
+    position: absolute;
+    left: 38px;
+    right: 5px;
+    top: 10px;
+    height: 150px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.chart-grid-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #cbd2da;
+    opacity: 0.7;
+}
+
+.stat-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+}
+
+.stat-date {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: normal;
+    text-align: right;
+}
+
